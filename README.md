@@ -138,7 +138,7 @@ Example loading content from a TAXII server:
 3. Change the URL specified in the `data` array to the path to the STIX bundle (e.g `assets/enterprise-attack.json`). Multiple paths may be added to the `data` array to display multiple STIX bundles in a single instance.
 
 Example loading content from local files:
-```json
+```JSON
 "domains": [
     {
         "name": "Enterprise",
