@@ -1,5 +1,5 @@
-# ATT&CK<sup>TM</sup> Navigator Layer File Format Definition
-This document describes **Version 4.1** of the MITRE ATT&CK Navigator Layer file format. The ATT&CK Navigator stores layers as JSON, therefore this document defines the JSON properties in a layer file.
+# ATT&CK® Navigator Layer File Format Definition
+This document describes **Version 4.2** of the MITRE ATT&CK Navigator Layer file format. The ATT&CK Navigator stores layers as JSON, therefore this document defines the JSON properties in a layer file.
 
 ## Property Table
 
@@ -27,15 +27,15 @@ This document describes **Version 4.1** of the MITRE ATT&CK Navigator Layer file
 
 | Name     | Type     | Required? | Default Value (if not present) | Description |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-| platforms | Array of String | No | all platforms within domain | Specifies the platforms within the technology domain – only those techniques tagged with these platforms are to be displayed. Valid values are as follows: <br>**domain=enterprise-attack**: "PRE", "Windows", "Linux", "macOS", "Network", "AWS", "GCP", "Azure", "Azure AD", "Office 365", "SaaS" <br>**domain=mobile-attack**: "Android", "iOS". <br>**domain=ics-attack**: "Windows", "Control Server", "Data Historian", "Engineering Workstation", "Field Controller/RTU/PLC/IED", "Human-Machine Interface", "Input/Output Server", "Safety Instrumented System/Protection Relay" |
+| platforms | Array of String | No | all platforms within domain | Specifies the platforms within the technology domain - only those techniques tagged with these platforms are to be displayed. Valid values are as follows: <br>**domain=enterprise-attack**: "PRE", "Windows", "Linux", "macOS", "Network", "AWS", "GCP", "Azure", "Azure AD", "Office 365", "SaaS" <br>**domain=mobile-attack**: "Android", "iOS". <br>**domain=ics-attack**: "Windows", "Control Server", "Data Historian", "Engineering Workstation", "Field Controller/RTU/PLC/IED", "Human-Machine Interface", "Input/Output Server", "Safety Instrumented System/Protection Relay" |
 
 ## Version Object Properties
 
 | Name     | Type     | Required? | Default Value (if not present) | Description |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-| attack | String | No | Current version of ATT&CK: "8" | ATT&CK version of this layer |
-| navigator | String | Yes | | Must be "4.2" |
-| layer | String | Yes | | Must be "4.1" |
+| attack | String | No | Current version of ATT&CK: "9" | ATT&CK version of this layer |
+| navigator | String | Yes | | Must be "4.3" |
+| layer | String | Yes | | Must be "4.2" |
 
 ## Technique Object properties
 
@@ -48,9 +48,9 @@ Technique objects are used to store both techniques and subtechniques. The only 
 | comment | String | No | "" | Free-text field |
 | enabled | Boolean | No | true | Specifies if the technique is considered enabled or disabled in this layer |
 | score | Number | No | (unscored) | Optional numeric score assigned to this technique in the layer. If omitted, the technique is considered to be "unscored" meaning that it will not be assigned a color from the gradient by the Navigator |
-| color | String | No | "" | Explicit color value assigned to the technique in this layer. Note that explicitly defined color overrides any color implied by the score – the Navigator will display the technique using the explicitly defined color |
+| color | String | No | "" | Explicit color value assigned to the technique in this layer. Note that explicitly defined color overrides any color implied by the score - the Navigator will display the technique using the explicitly defined color |
 | metadata | Array of Metadata objects and Metadata Separator objects | No | | User defined metadata for this technique. See definition of Metadata object and Metadata Separator object below |
-| showSubtechniques | boolean | No | false | if true, the sub-techniques under this technique will be shown by default. This field is only valid under a technique with subtechniques. Note that subtechniques can still be shown/hidden using the UI controls — this field is simply the default state. |
+| showSubtechniques | boolean | No | false | if true, the sub-techniques under this technique will be shown by default. This field is only valid under a technique with subtechniques. Note that subtechniques can still be shown/hidden using the UI controls - this field is simply the default state. |
 
 ## Gradient Object properties
 | Name     | Type     | Required? | Default Value (if not present) | Description |
@@ -82,6 +82,9 @@ Technique objects are used to store both techniques and subtechniques. The only 
 | layout | String | No | "side' | The layout of the matrix. Either "side", "flat" or "mini" |
 | showID | Boolean | No | false | if true, show the ATT&CK ID of techniques and tactics in the matrix |
 | showName | Boolean | No | true | if true, show the name of techniques and tactics in the matrix |
+| showAggregateScores | Boolean | No | false | if true, show the aggregate scores of techniques and its subtechniques in the matrix |
+| countUnscored | Boolean | No | false | if true, count the unscored techniques in the calculation of the aggregate score of techniques in the matrix |
+| aggregateFunction | String | No | "average" | The aggregate function used to calculate aggregate scores for techniques in the matrix. Either "average", "min", "max" or "sum" |
 
 ## Example
 The following example illustrates the layer file format:
@@ -90,8 +93,8 @@ The following example illustrates the layer file format:
     "name": "example layer",
     "versions": {
         "attack": "8",
-        "navigator": "4.2",
-        "layer": "4.1"
+        "navigator": "4.3",
+        "layer": "4.2"
     },
     "domain": "enterprise-attack",
     "description": "hello, world",
@@ -105,18 +108,23 @@ The following example illustrates the layer file format:
     "layout": {
         "layout": "side",
         "showName": true,
-        "showID": false
+        "showID": false,
+        "showAggregateScores": true,
+        "countUnscored": true,
+        "aggregateFunction": "average"
     },
     "hideDisabled": false,
     "techniques": [
         {
             "techniqueID": "T1110",
+            "score": 0,
             "color": "#fd8d3c",
             "comment": "This is a comment for technique T1110",
             "showSubtechniques": true
         },
         {
             "techniqueID": "T1110.001",
+            "score": 100,
             "comment": "This is a comment for T1110.001 - the first subtechnique of technique T1110.001"
         },
         {
